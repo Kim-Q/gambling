@@ -1,0 +1,40 @@
+To make our project code simple and beautiful,
+when you edit this project,
+please obey the rule before you upload your update.
+
+1. Give name to a new python file, please use the LOWERCASE
+# suggested module name
+import decoder
+import html_parser
+
+# not suggest
+import Decoder
+
+
+2. Give name to a new class, please use the CamelCase
+# suggested class name
+class Farm():
+    pass
+
+class AnimalFarm(Farm):
+    pass
+
+class _PrivateFarm(Farm):   # private function started by _
+    pass
+
+
+3. Give name to a new function, please use the LOWERCASE, Verb and separate by _
+#suggusted function name
+def run():
+    pass
+
+def run_with_env():
+    pass
+
+
+4. Give name to a new variable, please use the LOWERCASE, Noun and separate by _
+For the variable unchanged, write them in Capital.
+eg.
+MAX_CLIENT = 100
+MAX_CONNECTION = 1000
+CONNECTION_TIMEOUT = 600
