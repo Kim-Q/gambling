@@ -5,21 +5,10 @@ edit the program by yourself.
 """
 
 
-import numpy
+from recorder import Manager
 
 
-# %% Part 1
-"""
-give settings to this gambling round
-"""
-
-
-# %% Part 2
-"""
-start the circle function and the recorder function here
-"""
-
-# %% Part 3
-"""
-show the statistic results and visualization
-"""
+# %% Part 1 The version 1.6 of the gambling project
+test = Manager(500000)
+test.open1()
+test.statistic()
