@@ -12,10 +12,12 @@ from matplotlib.pyplot import MultipleLocator
 
 class Recorder:
     def __init__(self, player_num):
+        self.card = []
+        self.score = 0
         self.cards = []
-        self.last_card = 13 * 4
+        self.last_card = 13 * 4 * 4
         for i in range(13):
-            self.cards.append(4)
+            self.cards.append(4 * 4)
         self.last_step = 0
         self.next = None
         self.player_num = player_num
@@ -24,6 +26,30 @@ class Recorder:
             new_player = Strategy1()
             self.player.append(new_player)
 
+    def distribution(self, new_card):
+        self.card.append(new_card)
+        if new_card >= 10:
+            new_card = 10
+        self.score += new_card
+
+    def take_card(self):
+        temp_card = random.randrange(1, 14, 1)
+        while self.cards[temp_card - 1] <= 0 < self.last_card:
+            temp_card = random.randrange(1, 14, 1)
+        self.cards[temp_card - 1] -= 1
+        self.last_card -= 1
+        return temp_card
+
+    def check_score(self):
+        if 1 in self.card and self.score + 10 <= 21:
+            return self.score + 10
+        else:
+            return self.score
+
+    def is_boom(self):
+        if self.score > 21:
+            return True
+
     def play1(self):
         """
         simply statistic the last step scores of single players and record them
@@ -31,31 +57,64 @@ class Recorder:
         # step 1: distribute the first two cards to each players
         for i in range(self.player_num):
             for j in range(2):
-                temp_card = random.randrange(1, 13, 1)
-                self.cards[temp_card] -= 1
-                self.last_card -= 1
-                self.player[i].distribution(temp_card)
+                self.player[i].distribution(self.take_card())
+                self.distribution(self.take_card())
         # step 2: begin the playing rounds
         finished = False
         while not finished:
             for i in range(self.player_num):
+                # the player continue take the card
                 if self.player[i].make_decision():
-                    temp_card = random.randrange(1, 13, 1)
-                    while self.cards[temp_card] <= 0 < self.last_card:
-                        temp_card = random.randrange(1, 13, 1)
-                    self.cards[temp_card] -= 1
-                    self.last_card -= 1
-                    self.player[i].distribution(temp_card)
+                    self.player[i].distribution(self.take_card())
+                    # distribute card to the recorder
+                    self.distribution(self.take_card())
                     # Situation 1: the player has right 21 points
-                    finished = (self.player[i].score == 21)
+                    finished = (self.player[i].check_the_score() == 21)
                     if finished is True:
                         self.last_step = self.player[i].last_step
+                        print(self.last_step, "1")
+                        # print("wow")
                         break
                     # Situation 2: the player booms during the game, the last step is 0
                     finished = self.player[i].is_boom()
                     if finished is True:
-                        self.last_step = 0
+                        # self.last_step = 0
+                        # print("bad decision")
                         break
+                    # situation 3: the recorder has right 21 points
+                    finished = (self.check_score() == 21)
+                    if finished is True:
+                        # self.last_step = 0
+                        break
+                    # Situation 4: the recorder booms during the game, the last step is 0
+                    finished = self.is_boom()
+                    if finished is True:
+                        self.last_step = self.player[i].last_step
+                        print(self.last_step, "2")
+                        # print("good decision")
+                        break
+                # the player refuse to take the card
+                else:
+                    # self.last_step = 0
+                    # if self.player[i].check_score() is None or self.check_score() is None:
+                    #     self.last_step = 0
+                    # print(self.player[i].check_the_score(),self.check_score())
+                    # print(self.player[i].card,self.player[i].score)
+                    if self.player[i].check_the_score() > self.check_score() and len(self.card) > 2:
+                        if self.player[i].card[-1] is not 1:
+                            self.last_step = self.player[i].check_the_score() - self.player[i].card[-1]
+                            print(self.last_step, "3")
+                        else:
+                            if self.player[i].check_the_score() - 11 <= 10:
+                                self.last_step = self.player[i].check_the_score() - 11
+                                print(self.last_step, "4")
+                            else:
+                                self.last_step = self.player[i].check_the_score() - 1
+                                print(self.last_step, "5")
+                    else:
+                        self.last_step = 0
+                    finished = True
+                    break
 
     def make_record(self):
         return self.last_step
@@ -87,12 +146,14 @@ class Manager:
         manager statistic the result and give a visualization
         :return:
         """
+        # print(self.results)
         self.results[0] = 0
-        sum_frequency=sum(self.results)
-        print(sum_frequency/self.max_len)
+        sum_frequency = sum(self.results)
+        # print(sum_frequency)
+        print(sum_frequency / self.max_len)
         for i in range(21):
-            self.results[i]=self.results[i]/sum_frequency
-        # self.results=(self.results-min_frequency)/(max_frequency-min_frequency)
+            self.results[i] = self.results[i] / sum_frequency
+        print(self.results)
         x_values = list(range(21))
         plt.figure(figsize=(8, 6))
         x_major_locator = MultipleLocator(1)

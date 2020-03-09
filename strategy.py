@@ -16,22 +16,27 @@ class Strategy1:
     def __init__(self):
         self.card = []
         self.score = 0
-        self.last_step=0
+        self.last_step = 0
 
     def distribution(self, new_card):
-        self.card.append(new_card)
-        self.last_step=self.score
-        if new_card >= 10:
+        if new_card > 10:
             new_card = 10
+        self.card.append(new_card)
+        self.last_step = self.score
         self.score += new_card
 
     def is_boom(self):
-        """
-        check the card in player's hand is bigger than 21
-        :return:
-        """
         if self.score > 21:
             return True
+
+    def check_the_score(self):
+        # print("can you please run this chunk code?")
+        if 1 in self.card and self.score + 10 <= 21:
+            # print("no!")
+            return self.score + 10
+        else:
+            # print("yes!")
+            return self.score
 
     def make_decision(self):
         """
@@ -53,3 +58,8 @@ class Strategy2:
 
     def functions2(self):
         pass
+
+
+if __name__ == "__main__":
+    s=Strategy1()
+    s.check_score()
